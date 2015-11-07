@@ -80,9 +80,9 @@ var DataSet = Event.mixin({
 		replaceRecords(this, records, this.readAll(), matchKeys);
 	}
 	update(values, where) {
-		var updatedRecordResults = this.read(where).filter(record => {
+		var updatedRecordResults = this.read(where).map(record => {
 			return doUpdateRecord(this, record, values) || false;
-		});
+		}).filter(x => x !== false);
 		bulkDispatchUpdates(this, updatedRecordResults);
 	}
 	delete(where) {
@@ -150,13 +150,17 @@ function removeFromIndex(self, field, record) {
 function formatResults(self, results, format) {
 	if (isArray(format)) {
 		return results.map(result => {
-			return format.map(name => result[name]);
+			let out = {};
+			format.forEach(key => {
+				out[key] = result[key];
+			});
+			return out;
 		});
 	} else if (isObject(format)) {
 		return results.map(result => {
 			let out = {};
-			format.forEach((to, from) => {
-				out[to] = result[from];
+			Object.keys(format).forEach(from => {
+				out[format[from]] = result[from];
 			});
 			return out;
 		});
@@ -195,9 +199,11 @@ function replaceRecords(self, inRecords, currentRecords, matchKeys) {
 		seen = {};
 
 	inRecords.forEach(record => {
-		let match = self.readOne(matchKeys.map(key => record[key]));
+		let matching = {};
+		matchKeys.forEach(key => { matching[key] = record[key]; });
+		let match = self.readOne(matching);
 		if (match) {
-			let updateData = doUpdateRecord(self, record);
+			let updateData = doUpdateRecord(self, match, record);
 			seen[match[ordinalSymbol]] = true;
 			if (updateData) {
 				updates.push(updateData);
@@ -245,7 +251,6 @@ function isString(data) {
 }
 function makeEvent(type, record, batchNumber, batchSize, extra) {
 	extra = extra || {};
-	extra.type = type;
 	extra.batchNumber = batchNumber;
 	extra.batchSize = batchSize;
 	extra.record = record;

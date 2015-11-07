@@ -43,6 +43,10 @@ let Event = {
 
 	trigger: function(instance, event, data) {
 		if (instance.hasOwnProperty(eventSymbol) && instanceCallbacks[instance[eventSymbol]].hasOwnProperty(event)) {
+
+			data.sender = instance;
+			data.eventType = event;
+
 			instanceCallbacks[instance[eventSymbol]][event].forEach(callback => { callback.call(null, data); });
 		}
 	}
