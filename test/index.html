@@ -1,7 +1,7 @@
-<script type="application/javascript" src="../dist/module.js"></script>
+<script type="application/javascript" src="../dist/hadron.js"></script>
 <script type="text/javascript">
 
-var userData = new Hadron.DataSet(["firstName", "lastName", "id"], ["id"]);
+var userData = new window.Hadron.DataSet(["firstName", "lastName", "id"], ["id"]);
 
 userData.onCreate(function(event) {
 	console.log("create", event);
