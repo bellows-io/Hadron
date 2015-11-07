@@ -1,5 +1,12 @@
 module.exports = function (grunt) {
+   "use strict";
+
    grunt.initConfig({
+      jest: {
+         options: {
+            config: ".jestconfig"
+         }
+      },
       browserify: {
          dist: {
             options: {
@@ -15,7 +22,7 @@ module.exports = function (grunt) {
                // if the source file has an extension of es6 then
                // we change the name of the source file accordingly.
                // The result file's extension is always .js
-               "./dist/module.js": ["./modules/Hadron.es6"]
+               "./dist/hadron.js": ["./modules/Hadron.es6"]
             }
          }
       },
@@ -29,7 +36,8 @@ module.exports = function (grunt) {
 
    grunt.loadNpmTasks("grunt-browserify");
    grunt.loadNpmTasks("grunt-contrib-watch");
+   grunt.loadNpmTasks('grunt-jest');
 
-   grunt.registerTask("default", ["watch"]);
-   grunt.registerTask("build", ["browserify"]);
+   grunt.registerTask("test", ['browserify', 'jest']);
+   grunt.registerTask("default", ["browserify"]);
 };
