@@ -1,24 +1,64 @@
 <script type="application/javascript" src="../dist/hadron.js"></script>
+
+<table>
+	<thead>
+		<tr>
+			<th></th>
+			<th>Title</th>
+			<th>Due date</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr id="todoList" class="cv-hidden">
+			<td>
+				<input type="checkbox"
+					data-cv-name="checkbox"
+					data-cv-checked="completed" >
+			</td>
+			<td>{{ title }}</td>
+			<td>{{ dueDate | formatDate | valueOrDash }}</td>
+		</tr>
+	</tbody>
+</table>
+
+<style>
+.cv-hidden { display:none; }
+</style>
+
+
 <script type="text/javascript">
+(function(Hadron) {
+	"use strict";
+	var	taskData = new Hadron.DataSet(["id", "completed", "dueDate", "title"], ["id"]),
+		cvFactory = new Hadron.CollectionViewFactory({
+			formatDate: function(date) {
+				return date ? ((date.getMonth() + 1).toString() + "/" + (date.getDate()).toString() + "/" + (date.getFullYear())) : null;
+			},
+			valueOrDash: function(value) {
+				return value || '-';
+			}
+		}),
+		taskCollectionView = cvFactory.make(document.getElementById('todoList'));
 
-var userData = new window.Hadron.DataSet(["firstName", "lastName", "id"], ["id"]);
+	taskCollectionView.listenToDataSet(taskData);
 
-userData.onCreate(function(event) {
-	console.log("create", event);
-});
+	taskData.createMany([{
+		id: 1,
+		completed: true,
+		dueDate: new Date(),
+		title: "Pet the kitty"
+	}, {
+		id: 2,
+		completed: false,
+		dueDate: null,
+		title: "make food"
+	}, {
+		id: 3,
+		completed: false,
+		dueDate: new Date(1494567890123),
+		title: "Cicerone \"training\""
+	}]);
 
-userData.createMany([{
-	firstName: "Frodo",
-	lastName:  "Baggins",
-	id: 1
-}, {
-	firstName: "Bilbo",
-	lastName:  "Baggins",
-	id: 2
-}, {
-	firstName: "Jeff",
-	lastName:  "Baggins",
-	id: 3
-}]);
+}(window.Hadron));
 
 </script>
