@@ -1,0 +1,15 @@
+{
+  "name": "hadron",
+  "repository": "http://github.com/bellows-io/hadron.git",
+  "description": "js tools in es6",
+  "main": "dist/module.js",
+  "author": "Ray Minge <ray@rayminge.com>",
+  "readme": "do it",
+  "devDependencies": {
+    "babel-core": "^6.1.2",
+    "babelify": "^6.1.0",
+    "grunt": "^0.4.5",
+    "grunt-browserify": "^3.8.0",
+    "grunt-contrib-watch": "^0.6.1"
+  }
+}
