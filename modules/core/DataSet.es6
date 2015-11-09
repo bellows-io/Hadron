@@ -1,6 +1,7 @@
 "use strict";
 
 import { Event } from "./Event.es6";
+import { isArray, isObject, isString } from "./Utils.es6";
 
 var ordinalSymbol = Symbol("ordinal");
 
@@ -240,15 +241,7 @@ function findFieldValue(self, field, value, out) {
 		}
 	}
 }
-function isArray(data) {
-	return (Object.prototype.toString.call(data) == "[object Array]");
-}
-function isObject(data) {
-	return (data instanceof Object) && ! isArray(data);
-}
-function isString(data) {
-	return (typeof data === "string");
-}
+
 function makeEvent(type, record, batchNumber, batchSize, extra) {
 	extra = extra || {};
 	extra.batchNumber = batchNumber;
