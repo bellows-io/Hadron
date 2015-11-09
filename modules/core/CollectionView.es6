@@ -1,5 +1,7 @@
 "use strict";
 
+import { trim, escapeHTML } from "./Utils.es6";
+
 var templateRegex = new RegExp("{{(.*?)}}");
 
 class CollectionView {
@@ -101,20 +103,6 @@ class CollectionViewFactory {
 
 export { CollectionView, CollectionViewFactory };
 
-var escapeNode = document.createElement('div');
-function escapeHTML(text) {
-	escapeNode.innerHTML = '';
-	escapeNode.appendChild(document.createTextNode(text));
-	return escapeNode.innerHTML;
-}
-
-function trim(str) {
-	if (typeof str !== 'string') {
-		str = Object.prototype.toString.call(str);
-	}
-
-	return str.replace(/^\s+|\s+$/g, '');
-}
 
 function resolveTemplateStatement(self, statement, object) {
 	var statements = statement.split('|').map(trim),
@@ -159,13 +147,17 @@ function buildElFromData(self, data) {
 		out[attrName] = element;
 	});
 
-	elements = out.element.querySelectorAll('[data-cv-checked]');
+	elements = out.element.querySelectorAll('[data-cv-attr]');
 	[].slice.call(elements).forEach(element  => {
-		let attrName = element.getAttribute('data-cv-checked');
-		element.removeAttribute('data-cv-checked');
-		if (data[attrName]) {
-			element.setAttribute('checked', 'checked');
-		}
+		let values = element.getAttribute('data-cv-attr').split(',');
+		element.removeAttribute('data-cv-attr');
+
+		values.forEach(line => {
+			let [elKey, dataKey] = line.split("=");
+			if (dataKey in data && data[dataKey]) {
+				element.setAttribute(elKey, elKey);
+			}
+		});
 	});
 
 	return out;
