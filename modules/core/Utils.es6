@@ -20,8 +20,14 @@ function trim(str) {
 	if (typeof str !== 'string') {
 		str = Object.prototype.toString.call(str);
 	}
-
 	return str.replace(/^\s+|\s+$/g, '');
 }
 
-export { isArray, isObject, isString, trim, escapeHTML };
+function ucWord(str) {
+	if (typeof str !== 'string') {
+		str = Object.prototype.toString.call(str);
+	}
+	return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export { isArray, isObject, isString, trim, escapeHTML, ucWord };
