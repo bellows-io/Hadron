@@ -2,7 +2,8 @@
 
 import { trim, escapeHTML } from "./Utils.es6";
 
-var templateRegex = new RegExp("{{(.*?)}}");
+var templateRegex = new RegExp("{{(.*?)}}"),
+	attrRegex = new RegExp("\\[(.*?)\\]");
 
 class CollectionView {
 	constructor(root) {
@@ -114,6 +115,13 @@ function resolveTemplateStatement(self, statement, object) {
 	}
 
 	value = statements.reduce((value, key) => {
+		var match = key.match(attrRegex);
+		if (match) {
+			if (! value.hasOwnProperty(match[1])) {
+				throw new Error("Undefined key: `" + match[1] + "`");
+			}
+			return value[match[1]];
+		}
 		if (! self.filters.hasOwnProperty(key)) {
 			throw new Error("Undefined filter `" + key + "`");
 		}
