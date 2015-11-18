@@ -21,8 +21,7 @@ function triggerInstanceStaticEvent(self, type) {
 	var data = {
 		url: self.url,
 		method: self.method,
-		data: self.data,
-		async: self.async
+		data: self.data
 	};
 	eventCallbacks[type].forEach(callback => callback.call(null, data));
 }
@@ -81,7 +80,7 @@ function doLoad(self) {
 		responseType, output;
 
 	if (self.dataType === null) {
-		responseType = self.getResponseHeader("Content-type").split(";")[0];
+		responseType = self.getResponseHeader("Content-Type").split(";")[0];
 		if (responseType == 'application/xml') {
 			self.dataType = 'xml';
 		} else if (responseType == 'application/json') {
@@ -108,7 +107,9 @@ function doLoad(self) {
 	}
 
 	triggerInstanceStaticEvent(self, 'success');
-	self.success(output);
+	if (self.success) {
+		self.success(output);
+	}
 	self.promise.resolve(output);
 }
 
@@ -173,9 +174,9 @@ function perform(self) {
 		if (query.length) {
 			query = '?' + query;
 		}
-		self.xr.open(self.method, self.url + query, self.async);
+		self.xr.open(self.method, self.url + query, true);
 	} else {
-		self.xr.open(self.method, self.url, self.async);
+		self.xr.open(self.method, self.url, true);
 
 		setRequestHeaders(self, {
 			"Content-type": "application/x-www-form-urlencoded"
@@ -219,10 +220,11 @@ function urlIsCrossDomain(url) {
 }
 
 class Request {
-	constructor(url, method, data, success, error) {
+	constructor(url, method, data, dataType, success, error) {
 		this.url = url;
 		this.method = method || 'GET';
 		this.data = data || {};
+		this.dataType = dataType || null;
 		this.success = success;
 		this.error = error;
 		if (window && !! window.XDomainRequest && urlIsCrossDomain(url)) {
@@ -239,7 +241,7 @@ class Request {
 		this.xr.abort();
 	}
 	getResponseHeader(key) {
-		var headers = this.getResponseHeader();
+		var headers = this.getResponseHeaders();
 		if (key in headers) {
 			return headers[key];
 		}
@@ -276,8 +278,8 @@ Event.mixin({
 
 
 ['GET', 'PUT', 'POST', 'DELETE'].forEach(method => {
-	Request[method.toLowerCase()] = function(url, data, dataType, async) {
-		return (new Request(url, method, data, dataType, async)).promise;
+	Request[method.toLowerCase()] = function(url, data, dataType) {
+		return (new Request(url, method, data, dataType)).promise;
 	};
 });
 
