@@ -21,15 +21,24 @@ class CollectionView {
 		this.filters[name] = callback;
 		return this;
 	}
-	listenToDataSet(dataSet) {
+	listenToDataSet(dataSet, where) {
 		dataSet.
 			onCreate(event => {
+				if (where && ! where(event.record)) {
+					return;
+				}
 				this.add(event.record.id, event.record);
 			}).
 			onUpdate(event => {
+				if (where && ! where(event.record)) {
+					return;
+				}
 				this.update(event.record.id, event.record);
 			}).
 			onDelete(event => {
+				if (where && ! where(event.record)) {
+					return;
+				}
 				this.remove(event.record.id);
 			});
 	}
