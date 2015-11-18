@@ -235,7 +235,7 @@ function findFieldValue(self, field, value, out) {
 		}
 	} else {
 		for (i = 0; i < self.data.length; i++) {
-			if (self.data[i][field] == value) {
+			if (self.data[i] && self.data[i][field] == value) {
 				out.push(i);
 			}
 		}
