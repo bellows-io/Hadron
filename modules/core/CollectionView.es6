@@ -117,9 +117,13 @@ export { CollectionView, CollectionViewFactory };
 function resolveTemplateStatement(self, statement, object) {
 	var statements = statement.split('|').map(trim),
 		key = statements.shift(),
-		value;
+		value, root;
 
-	if (! object.hasOwnProperty(key)) {
+	if (key == '@self') {
+		root = object;
+	} else if (object.hasOwnProperty(key)) {
+		root = object[key];
+	} else {
 		return '';
 	}
 
@@ -135,7 +139,7 @@ function resolveTemplateStatement(self, statement, object) {
 			throw new Error("Undefined filter `" + key + "`");
 		}
 		return self.filters[key].call(null, value);
-	}, object[key]);
+	}, root);
 
 	return escapeHTML(value);
 }
