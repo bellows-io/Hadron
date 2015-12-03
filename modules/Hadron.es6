@@ -7,11 +7,12 @@ import { Promise } from "./core/Promise.es6";
 import { Dom } from "./core/Dom.es6";
 import { escapeHTML } from "./core/Utils.es6";
 import { Request, RequestState } from "./core/Request.es6";
+import { Router } from "./core/Router.es6";
 import { CollectionView, CollectionViewFactory } from "./core/CollectionView.es6";
 
-var Hadron = { Dom, Event, DataSet, Promise, CollectionView, CollectionViewFactory, Request, RequestState, Encoding, escapeHTML };
+var Hadron = { Dom, Event, DataSet, Promise, CollectionView, CollectionViewFactory, Request, RequestState, Encoding, escapeHTML, Router };
 
-export { Dom, Event, DataSet, Promise, CollectionView, CollectionViewFactory, Request, RequestState, Encoding, escapeHTML };
+export { Dom, Event, DataSet, Promise, CollectionView, CollectionViewFactory, Request, RequestState, Encoding, escapeHTML, Router };
 
 
 global.Hadron = Hadron;
